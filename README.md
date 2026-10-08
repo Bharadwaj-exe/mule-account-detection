@@ -393,6 +393,7 @@ Real limitations that remain:
 ```text
 fraud-detection/
 ├── README.md                  This file
+├── LICENSE                    MIT licence
 ├── artifacts/models/          Frozen Experiment 3 checkpoint
 ├── configs/experiments/       One JSON specification per experiment
 ├── data/manifests/            Provenance for externally acquired datasets
@@ -452,3 +453,11 @@ benchmark datasets are not vendored: they are large public downloads, and
 | `docs/temporal_collapse.md` | Why the survivorship time-forward split misled |
 
 When source and documentation disagree, **the source and its tests win**.
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE). The bundled front-end libraries in
+`src/ui/vendor/` (Tailwind CSS, Alpine.js, Vis-Network) keep their own open-source licences, and
+the datasets referenced here remain under their publishers' terms.
