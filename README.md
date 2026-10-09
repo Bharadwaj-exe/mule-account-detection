@@ -71,7 +71,7 @@ architectural claim in this repository is validated against it.
 
 The dataset is **not vendored**. All scripts, `UIConfig.DATASET_PATH`, and
 `tests/test_reference_regression.py` reference it as `../dkdata.json`, i.e. one
-level above the `fraud-detection/` project directory. It is derived from the
+level above the repository root. It is derived from the
 public Azerbaijani Laundromat (OCCRP) data; place your copy at that path before
 running the demo, the dashboard or the reference tests (see `docs/datasets.md`).
 
@@ -96,11 +96,18 @@ Any change that moves these numbers is a regression, not an improvement.
 
 ## Requirements
 
-Python 3.11. Install dependencies:
+Python 3.11. Clone the repository and install dependencies:
 
 ```bash
+git clone https://github.com/Bharadwaj-exe/mule-account-detection.git
+cd mule-account-detection
+python -m venv .venv
+.venv\Scriptsctivate          # Windows; on macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+Then place the Reference Dataset at `../dkdata.json` (see
+[The Reference Dataset](#the-reference-dataset)).
 
 `requirements.txt` declares every runtime and test dependency: `pandas`,
 `numpy`, `networkx`, `torch` (CPU build), `torch-geometric`, `scikit-learn`, a
@@ -120,7 +127,7 @@ server, so **the console needs no internet access to run**. See
 
 ## How to run it
 
-All commands run from the `fraud-detection/` directory.
+All commands run from the repository root.
 
 ### Headless inference on the Reference Dataset
 
@@ -391,7 +398,7 @@ Real limitations that remain:
 ## Repository layout
 
 ```text
-fraud-detection/
+mule-account-detection/
 ├── README.md                  This file
 ├── LICENSE                    MIT licence
 ├── artifacts/models/          Frozen Experiment 3 checkpoint
