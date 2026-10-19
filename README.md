@@ -7,31 +7,34 @@
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-F7931E?logo=scikitlearn&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-An anti-money-laundering system that models financial transactions as a directed
-multigraph, scores every account for mule and circular-laundering behaviour, and
-gives investigators a dashboard to see *why* an account was flagged.
+An anti-money-laundering project. Transactions are turned into a directed graph,
+every account gets a risk score, and a dashboard shows why an account was flagged.
 
 ![Dashboard overview: risk distribution and the network explorer around the top-ranked entity](docs/images/dashboard-overview.png)
 
 ## Highlights
 
-- **End-to-end pipeline:** ingestion → entity resolution → directed multigraph
-  (parallel edges preserved) → 167 structural features → GraphSAGE inference →
-  ranked, explained alerts.
-- **Benchmarked on IBM AMLworld HI-Small** (5.1M transactions, 515K accounts):
-  gradient boosting on six AML feature families reaches **0.38 average
-  precision, 9.8× a label-free baseline**, for retrospective detection.
-- **Negative results reported, not hidden:** controlled ablations under a
-  calendar-forward split show graph features add no measurable lift over
-  tabular ones, so no larger GNN was built. See
-  [`docs/model_selection.md`](docs/model_selection.md).
-- **Bring your own data:** upload any CSV / Excel file; a semantic column mapper
-  proposes a schema with per-column evidence, and a compatibility check gates
-  what reaches the model.
-- **Reproducible research:** config-driven experiments, automatic leakage
-  audits, multi-seed comparisons, and a 918-test suite running in CI.
-- **Offline investigation console:** network explorer, ranked entities and
-  evidence dossiers, with no CDN or internet needed.
+- **Pipeline:** transactions are loaded, each counterparty is matched to a single
+  entity, and the result is built into a directed multigraph. Repeated transfers
+  between the same two accounts are kept as separate edges, not merged. 167
+  features are computed for each account and a GraphSAGE model scores them.
+- **Benchmark:** on IBM AMLworld HI-Small (5.1M transactions, 515K accounts),
+  gradient boosting on six groups of AML features reaches an average precision
+  of 0.38. A baseline that never looks at the labels gets 0.039, so this is about
+  9.8 times better.
+- **Graph features did not help:** I tested whether graph features add anything
+  over plain tabular features, using a split where the model only sees the past.
+  They gave no measurable improvement, so I did not build a bigger GNN. The full
+  comparison is in [`docs/model_selection.md`](docs/model_selection.md).
+- **Your own data:** any CSV or Excel file can be uploaded. Each column is
+  matched to the expected schema with the evidence shown, and a compatibility
+  check decides whether the data is allowed to reach the model.
+- **Reproducible:** every experiment runs from a config file, is checked for data
+  leakage automatically, and is repeated over several random seeds. 918 tests
+  run in CI on every push.
+- **Works offline:** the dashboard has a network explorer, a ranked list of
+  entities and an evidence page for each one. The front-end libraries are
+  included in the repo, so no internet connection is needed.
 
 | Ranked entities | Investigation dossier |
 |---|---|
