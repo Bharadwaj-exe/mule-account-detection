@@ -18,8 +18,8 @@ def test_semantic_mapping_review_flow(tmp_path, monkeypatch):
     monkeypatch.setattr("src.ui.app.WorkspaceManager", lambda: manager)
     
     import socketserver
-    port = UIConfig.PORT + 11
-    server = socketserver.TCPServer((UIConfig.HOST, port), APIHandler)
+    server = socketserver.TCPServer((UIConfig.HOST, 0), APIHandler)
+    port = server.server_address[1]
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True
     thread.start()

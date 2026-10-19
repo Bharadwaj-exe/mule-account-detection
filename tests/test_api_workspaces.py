@@ -66,8 +66,8 @@ def test_dataset_hub_upload_api(tmp_path, monkeypatch):
     import socketserver
     from src.ui.app import APIHandler
 
-    port = UIConfig.PORT + 10
-    server = socketserver.TCPServer((UIConfig.HOST, port), APIHandler)
+    server = socketserver.TCPServer((UIConfig.HOST, 0), APIHandler)
+    port = server.server_address[1]
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True
     thread.start()
@@ -203,8 +203,8 @@ def test_upload_with_datetime_and_numpy_types(tmp_path, monkeypatch):
     import socketserver
     from src.ui.app import APIHandler
 
-    port = UIConfig.PORT + 11
-    server = socketserver.TCPServer((UIConfig.HOST, port), APIHandler)
+    server = socketserver.TCPServer((UIConfig.HOST, 0), APIHandler)
+    port = server.server_address[1]
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True
     thread.start()

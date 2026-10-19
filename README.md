@@ -1,9 +1,61 @@
 # Graph-Based Mule Account & Circular Transaction Detection
 
-A research-grade financial-crime detection system that models transaction data as
-a directed multigraph and scores entities for mule-account and circular-laundering
-behaviour using a frozen GraphSAGE model, with an investigation dashboard for
-reviewing results.
+[![tests](https://github.com/Bharadwaj-exe/mule-account-detection/actions/workflows/tests.yml/badge.svg)](https://github.com/Bharadwaj-exe/mule-account-detection/actions/workflows/tests.yml)
+![Python 3.11](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)
+![PyTorch Geometric](https://img.shields.io/badge/PyTorch%20Geometric-2.8-EE4C2C?logo=pytorch&logoColor=white)
+![NetworkX](https://img.shields.io/badge/NetworkX-3.6-blue)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-F7931E?logo=scikitlearn&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+An anti-money-laundering system that models financial transactions as a directed
+multigraph, scores every account for mule and circular-laundering behaviour, and
+gives investigators a dashboard to see *why* an account was flagged.
+
+![Dashboard overview: risk distribution and the network explorer around the top-ranked entity](docs/images/dashboard-overview.png)
+
+## Highlights
+
+- **End-to-end pipeline:** ingestion → entity resolution → directed multigraph
+  (parallel edges preserved) → 167 structural features → GraphSAGE inference →
+  ranked, explained alerts.
+- **Benchmarked on IBM AMLworld HI-Small** (5.1M transactions, 515K accounts):
+  gradient boosting on six AML feature families reaches **0.38 average
+  precision, 9.8× a label-free baseline**, for retrospective detection.
+- **Negative results reported, not hidden:** controlled ablations under a
+  calendar-forward split show graph features add no measurable lift over
+  tabular ones, so no larger GNN was built. See
+  [`docs/model_selection.md`](docs/model_selection.md).
+- **Bring your own data:** upload any CSV / Excel file; a semantic column mapper
+  proposes a schema with per-column evidence, and a compatibility check gates
+  what reaches the model.
+- **Reproducible research:** config-driven experiments, automatic leakage
+  audits, multi-seed comparisons, and a 918-test suite running in CI.
+- **Offline investigation console:** network explorer, ranked entities and
+  evidence dossiers, with no CDN or internet needed.
+
+| Ranked entities | Investigation dossier |
+|---|---|
+| ![Ranked entities table](docs/images/ranked-entities.png) | ![Investigation dossier for a flagged entity](docs/images/investigation-dossier.png) |
+
+## Quick start
+
+```bash
+git clone https://github.com/Bharadwaj-exe/mule-account-detection.git
+cd mule-account-detection
+pip install -r requirements.txt
+
+# Reference Dataset: download dkdata.json from the v1.0.0 release, one level up
+gh release download v1.0.0 --repo Bharadwaj-exe/mule-account-detection --pattern dkdata.json --dir ..
+
+python run_ui.py        # dashboard at http://127.0.0.1:8080 (about a minute to start)
+python -m pytest        # full test suite
+```
+
+Without the `gh` CLI, download `dkdata.json` from the
+[v1.0.0 release page](https://github.com/Bharadwaj-exe/mule-account-detection/releases/tag/v1.0.0)
+and save it next to the cloned folder.
+
+## Project status
 
 > **Status note.** This README describes what the repository does **today**.
 > Anything not yet working is listed under
@@ -72,8 +124,10 @@ architectural claim in this repository is validated against it.
 The dataset is **not vendored**. All scripts, `UIConfig.DATASET_PATH`, and
 `tests/test_reference_regression.py` reference it as `../dkdata.json`, i.e. one
 level above the repository root. It is derived from the
-public Azerbaijani Laundromat (OCCRP) data; place your copy at that path before
-running the demo, the dashboard or the reference tests (see `docs/datasets.md`).
+public Azerbaijani Laundromat (OCCRP) data and is attached to the
+[v1.0.0 release](https://github.com/Bharadwaj-exe/mule-account-detection/releases/tag/v1.0.0)
+as `dkdata.json`; place it at that path before running the demo, the dashboard
+or the reference tests (see `docs/datasets.md`).
 
 Its behaviour is pinned to exact values:
 

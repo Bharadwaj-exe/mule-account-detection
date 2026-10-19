@@ -464,9 +464,8 @@ def api_server(manager, monkeypatch):
 
     monkeypatch.setattr("src.ui.app.WorkspaceManager", lambda *a, **k: manager)
 
-    port = UIConfig.PORT + 17
-    socketserver.TCPServer.allow_reuse_address = True
-    server = socketserver.TCPServer((UIConfig.HOST, port), APIHandler)
+    server = socketserver.TCPServer((UIConfig.HOST, 0), APIHandler)
+    port = server.server_address[1]
     # poll_interval bounds how long shutdown() blocks (default 0.5 s).
     thread = threading.Thread(target=server.serve_forever, args=(0.01,), daemon=True)
     thread.start()
